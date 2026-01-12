@@ -10,7 +10,7 @@ import { HTTP_STATUS } from '../constants.js';
  */
 export const getHealth = async (req, res) => {
   const health = {
-    status: 'UP',
+    status: 'UP', 
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     services: {
