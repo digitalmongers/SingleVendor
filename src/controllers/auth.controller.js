@@ -1,5 +1,5 @@
 import AuthService from '../services/auth.service.js';
-import { ApiResponse } from '../utils/apiResponse.js';
+import ApiResponse from '../utils/apiResponse.js';
 import { HTTP_STATUS, SUCCESS_MESSAGES, CONFIG } from '../constants.js';
 
 // @desc    Register user

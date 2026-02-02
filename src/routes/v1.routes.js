@@ -17,6 +17,9 @@ import topbarRoutes from './topbar.routes.js';
 import reliabilityRoutes from './reliability.routes.js';
 import trustedByRoutes from './trustedBy.routes.js';
 import socialMediaRoutes from './socialMedia.routes.js';
+import employeeManagementRoutes from './employeeManagement.routes.js';
+import employeeAuthRoutes from './employeeAuth.routes.js';
+import adminEmailTemplateRoutes from './adminEmailTemplate.routes.js';
 
 const router = express.Router();
 
@@ -41,7 +44,9 @@ router.use('/topbar', topbarRoutes);
 router.use('/company-reliability', reliabilityRoutes);
 router.use('/trusted-by', trustedByRoutes);
 router.use('/social-media', socialMediaRoutes);
-
+router.use('/admin/staff', employeeManagementRoutes);
+router.use('/employee/auth', employeeAuthRoutes);
+router.use('/admin/admin-template', adminEmailTemplateRoutes);
 // Health check can also be versioned if needed, but usually kept root
 router.use('/health', healthRoutes);
 
