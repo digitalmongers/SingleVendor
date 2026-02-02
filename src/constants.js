@@ -30,14 +30,14 @@ export const ERROR_MESSAGES = {
   NOT_FOUND: 'The requested resource was not found.',
   CONFLICT: 'A conflict occurred with the current state of the resource.',
   TOO_MANY_REQUESTS: 'Rate limit exceeded. Please try again later.',
-  
+
   // Validation & Logic Errors
   VALIDATION_ERROR: 'One or more fields failed validation.',
   INVALID_CREDENTIALS: 'The email or password provided is incorrect.',
   TOKEN_EXPIRED: 'Your session has expired. Please log in again.',
   INVALID_TOKEN: 'The provided authentication token is invalid or malformed.',
   DUPLICATE_RESOURCE: 'This resource already exists in our system.',
-  
+
   // Server Side Errors
   INTERNAL_ERROR: 'An unexpected error occurred on our end. Please try again later.',
   SERVICE_UNAVAILABLE: 'The service is temporarily unavailable. We are working on it!',
@@ -114,4 +114,21 @@ export const RESOURCE_TYPES = {
   PRODUCT: 'Product',
   SHOP: 'Shop',
   EXTERNAL: 'External',
+};
+
+// Permission Modules for PBAC
+export const SYSTEM_PERMISSIONS = {
+  VENDOR_MANAGEMENT: 'Vendor Management',
+  ORDER_MANAGEMENT: 'Order Management',
+  CATEGORY_SETUP: 'Category Setup',
+  PRODUCT_MANAGEMENT: 'Product Management',
+  OFFERS_AND_DEALS: 'Offers and Deals',
+  USER_MANAGEMENT: 'User Management',
+  SUBSCRIBES: 'Subscribes',
+  REPORTS: 'Reports',
+  BLOG_MANAGEMENT: 'Blog Management',
+  SYSTEM_SETTINGS: 'System Settings',
+  EMPLOYEE_MANAGEMENT: 'Employee Management',
+  THIRD_PARTY_SETUP: '3rd Party Setup',
+  HELP_SUPPORT: 'Help Support',
 };

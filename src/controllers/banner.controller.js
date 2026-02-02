@@ -12,7 +12,7 @@ class BannerController {
     const banners = await BannerService.getAllBanners();
     return ApiResponse.success(res, HTTP_STATUS.OK, SUCCESS_MESSAGES.FETCHED, banners);
   };
-
+ 
   getBannerById = async (req, res) => {
     const banner = await BannerService.getBannerById(req.params.id);
     return ApiResponse.success(res, HTTP_STATUS.OK, SUCCESS_MESSAGES.FETCHED, banner);
@@ -32,7 +32,7 @@ class BannerController {
     const banner = await BannerService.toggleBannerStatus(req.params.id);
     return ApiResponse.success(res, HTTP_STATUS.OK, 'Banner status toggled successfully', banner);
   };
-
+ 
   getPublicBanners = async (req, res) => {
     const banners = await BannerService.getPublicBanners();
     return ApiResponse.success(res, HTTP_STATUS.OK, SUCCESS_MESSAGES.FETCHED, banners);
