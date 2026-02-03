@@ -26,6 +26,7 @@ import socialMediaChatRoutes from './socialMediaChat.routes.js';
 import smsGatewayRoutes from './smsGateway.routes.js';
 import socialLoginRoutes from './socialLogin.routes.js';
 import googleMapRoutes from './googleMap.routes.js';
+import loginSettingRoutes from './loginSetting.routes.js';
 const router = express.Router();
 
 /**
@@ -58,6 +59,7 @@ router.use('/social-media-chat', socialMediaChatRoutes);
 router.use('/sms-gateways', smsGatewayRoutes);
 router.use('/social-login', socialLoginRoutes);
 router.use('/google-map-apis', googleMapRoutes);
+router.use('/login-settings', loginSettingRoutes);
 // Health check can also be versioned if needed, but usually kept root
 router.use('/health', healthRoutes);
 
