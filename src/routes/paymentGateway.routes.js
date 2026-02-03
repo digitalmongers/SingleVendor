@@ -5,6 +5,7 @@ import { SYSTEM_PERMISSIONS } from '../constants.js';
 import cacheMiddleware from '../middleware/cache.middleware.js';
 import validate from '../middleware/validate.middleware.js';
 import { updateGatewaySchema } from '../validations/paymentGateway.validation.js';
+import lockRequest from '../middleware/idempotency.middleware.js';
 import rateLimit from 'express-rate-limit';
 
 const gatewayLimiter = rateLimit({
@@ -26,6 +27,6 @@ router.get('/public', cacheMiddleware(3600), PaymentGatewayController.getPublicG
 router.use(authorizeStaff(SYSTEM_PERMISSIONS.THIRD_PARTY_SETUP));
 
 router.get('/', PaymentGatewayController.getAllGateways);
-router.patch('/:name', gatewayLimiter, validate(updateGatewaySchema), PaymentGatewayController.updateGateway);
+router.patch('/:name', gatewayLimiter, lockRequest(), validate(updateGatewaySchema), PaymentGatewayController.updateGateway);
 
 export default router;
