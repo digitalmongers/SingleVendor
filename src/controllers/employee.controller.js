@@ -90,6 +90,16 @@ export const deleteEmployee = catchAsync(async (req, res) => {
     res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, null, 'Employee deleted successfully'));
 });
 
+/**
+ * @desc    Update employee details
+ * @route   PATCH /api/v1/admin/employees/:id
+ * @access  Private (Admin)
+ */
+export const updateEmployee = catchAsync(async (req, res) => {
+    const employee = await EmployeeService.updateEmployee(req.params.id, req.body, req.files);
+    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, employee, 'Employee updated successfully'));
+});
+
 export default {
     registerEmployee,
     login,
@@ -98,4 +108,5 @@ export default {
     toggleStatus,
     exportEmployees,
     deleteEmployee,
+    updateEmployee,
 };

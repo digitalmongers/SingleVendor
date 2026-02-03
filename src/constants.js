@@ -91,7 +91,6 @@ export const REGEX = {
 
 // Roles (Legacy support or adding to constants)
 export const ROLES = {
-  USER: 'user',
   ADMIN: 'admin',
   MANAGER: 'manager',
 };
@@ -123,7 +122,6 @@ export const SYSTEM_PERMISSIONS = {
   CATEGORY_SETUP: 'Category Setup',
   PRODUCT_MANAGEMENT: 'Product Management',
   OFFERS_AND_DEALS: 'Offers and Deals',
-  USER_MANAGEMENT: 'User Management',
   SUBSCRIBES: 'Subscribes',
   REPORTS: 'Reports',
   BLOG_MANAGEMENT: 'Blog Management',

@@ -2,7 +2,7 @@ import EmployeeRepository from '../repositories/employee.repository.js';
 import RoleRepository from '../repositories/role.repository.js';
 import AppError from '../utils/AppError.js';
 import { HTTP_STATUS } from '../constants.js';
-import { uploadToCloudinary } from '../utils/cloudinary.js';
+import { uploadToCloudinary, deleteFromCloudinary } from '../utils/cloudinary.js';
 import { generateToken } from '../utils/jwt.js';
 import Logger from '../utils/logger.js';
 
@@ -97,11 +97,65 @@ class EmployeeService {
         return employee;
     }
 
-    async deleteEmployee(id) {
-        const employee = await EmployeeRepository.deleteById(id);
+    async updateEmployee(id, updateData, files) {
+        const employee = await EmployeeRepository.findById(id);
         if (!employee) {
             throw new AppError('Employee not found', HTTP_STATUS.NOT_FOUND);
         }
+
+        // Handle Image Updates
+        if (files) {
+            if (files.profileImage) {
+                if (employee.profileImage?.publicId) {
+                    await deleteFromCloudinary(employee.profileImage.publicId);
+                }
+                const result = await uploadToCloudinary(files.profileImage[0], 'employees/profiles');
+                updateData.profileImage = { url: result.secure_url, publicId: result.public_id };
+            }
+
+            if (files.identityFront) {
+                if (employee.identityImage?.front?.publicId) {
+                    await deleteFromCloudinary(employee.identityImage.front.publicId);
+                }
+                const result = await uploadToCloudinary(files.identityFront[0], 'employees/identity');
+                if (!updateData.identityImage) updateData.identityImage = { ...employee.identityImage };
+                updateData.identityImage.front = { url: result.secure_url, publicId: result.public_id };
+            }
+
+            if (files.identityBack) {
+                if (employee.identityImage?.back?.publicId) {
+                    await deleteFromCloudinary(employee.identityImage.back.publicId);
+                }
+                const result = await uploadToCloudinary(files.identityBack[0], 'employees/identity');
+                if (!updateData.identityImage) updateData.identityImage = { ...employee.identityImage };
+                updateData.identityImage.back = { url: result.secure_url, publicId: result.public_id };
+            }
+        }
+
+        const updated = await EmployeeRepository.updateById(id, updateData);
+        Logger.info(`Employee updated: ${updated.email}`);
+        return updated;
+    }
+
+    async deleteEmployee(id) {
+        const employee = await EmployeeRepository.findById(id);
+        if (!employee) {
+            throw new AppError('Employee not found', HTTP_STATUS.NOT_FOUND);
+        }
+
+        // Delete images from Cloudinary
+        if (employee.profileImage?.publicId) {
+            await deleteFromCloudinary(employee.profileImage.publicId);
+        }
+        if (employee.identityImage?.front?.publicId) {
+            await deleteFromCloudinary(employee.identityImage.front.publicId);
+        }
+        if (employee.identityImage?.back?.publicId) {
+            await deleteFromCloudinary(employee.identityImage.back.publicId);
+        }
+
+        await EmployeeRepository.deleteById(id);
+        Logger.info(`Employee deleted: ${employee.email}`);
         return employee;
     }
 }

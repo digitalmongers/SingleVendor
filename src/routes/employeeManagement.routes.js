@@ -39,6 +39,14 @@ router.route('/employees')
     .get(EmployeeController.getAllEmployees);
 
 router.route('/employees/:id')
+    .patch(
+        uploadMiddleware.fields([
+            { name: 'profileImage', maxCount: 1 },
+            { name: 'identityFront', maxCount: 1 },
+            { name: 'identityBack', maxCount: 1 }
+        ]),
+        EmployeeController.updateEmployee
+    )
     .delete(EmployeeController.deleteEmployee);
 
 router.patch('/employees/:id/status', EmployeeController.toggleStatus);
