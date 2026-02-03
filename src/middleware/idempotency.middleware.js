@@ -1,50 +1,57 @@
-import redisClient from '../config/redis.js';
-import AppError from '../utils/AppError.js';
+import crypto from 'crypto';
+import Cache from '../utils/cache.js';
+import ApiResponse from '../utils/apiResponse.js';
 import { HTTP_STATUS } from '../constants.js';
 import Logger from '../utils/logger.js';
 
 /**
- * Enterprise-grade Request Locking Middleware
- * Prevents race conditions and duplicate writes using Redis.
- * @param {number} ttl - Lock expiration time in seconds (default 5s)
+ * Idempotency Middleware (Double Hit Prevention)
+ * Locks a specific request for a user for a short duration.
+ * @param {number} ttl - Lock duration in seconds (default 5s)
  */
 const lockRequest = (ttl = 5) => {
-    return async (req, res, next) => {
-        // Determine unique identifier for the request (User ID or Admin ID + Path)
-        const userId = req.user?.id || req.admin?.id || req.employee?.id || req.ip;
-        const lockKey = `lock:${userId}:${req.method}:${req.originalUrl}`;
+  return async (req, res, next) => {
+    // Only apply to state-changing methods (POST, PATCH, PUT, DELETE)
+    if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
+      return next();
+    }
 
-        try {
-            // SETNX (Set if Not eXists) with expiry
-            const result = await redisClient.set(lockKey, 'locked', 'EX', ttl, 'NX');
+    // 1. Generate a unique key for the request
+    // Strategy: userId + path + hash(body)
+    const userId = req.user?._id || req.admin?._id || 'guest';
+    const bodyHash = crypto
+      .createHash('md5')
+      .update(JSON.stringify(req.body || {}))
+      .digest('hex');
+    
+    const lockKey = `lock:${userId}:${req.originalUrl}:${bodyHash}`;
 
-            if (!result) {
-                Logger.warning(`🚫 Request Locked: Duplicate request detected for ${lockKey}`);
-                throw new AppError(
-                    'Processing your previous request. Please wait.',
-                    HTTP_STATUS.TOO_MANY_REQUESTS,
-                    'REQUEST_LOCKED'
-                );
-            }
+    try {
+      // 2. Check if lock exists in Redis
+      const isLocked = await Cache.get(lockKey);
+      
+      if (isLocked) {
+        Logger.warn(`Double-hit prevented: ${lockKey}`);
+        return res.status(HTTP_STATUS.TOO_MANY_REQUESTS).json(
+          new ApiResponse(
+            HTTP_STATUS.TOO_MANY_REQUESTS, 
+            null, 
+            'Request is already being processed. Please wait a moment.'
+          )
+        );
+      }
 
-            // Ensure lock is released after request finishes (success or failure)
-            const releaseLock = async () => {
-                try {
-                    await redisClient.del(lockKey);
-                    Logger.debug(`🔓 Lock Released: ${lockKey}`);
-                } catch (err) {
-                    Logger.error(`Failed to release lock: ${lockKey}`, { error: err.message });
-                }
-            };
-
-            res.on('finish', releaseLock);
-            res.on('close', releaseLock);
-
-            next();
-        } catch (error) {
-            next(error);
-        }
-    };
+      // 3. Set lock for TTL (seconds)
+      // Implementation: We use a simple value '1' to indicate locked
+      await Cache.set(lockKey, 'locked', ttl);
+      
+      // 4. Proceed to next
+      next();
+    } catch (error) {
+      Logger.error('Idempotency Middleware Error', { error: error.message });
+      next(); // Don't block if cache fails, but log it
+    }
+  };
 };
 
 export default lockRequest;
