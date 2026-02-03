@@ -28,6 +28,8 @@ import socialLoginRoutes from './socialLogin.routes.js';
 import googleMapRoutes from './googleMap.routes.js';
 import loginSettingRoutes from './loginSetting.routes.js';
 import cookieConsentRoutes from './cookieConsent.routes.js';
+import systemSettingRoutes from './systemSetting.routes.js';
+import productAttributeRoutes from './productAttribute.routes.js';
 const router = express.Router();
 
 /**
@@ -62,6 +64,8 @@ router.use('/social-login', socialLoginRoutes);
 router.use('/google-map-apis', googleMapRoutes);
 router.use('/login-settings', loginSettingRoutes);
 router.use('/cookie-consent', cookieConsentRoutes);
+router.use('/system-settings', systemSettingRoutes);
+router.use('/product-attributes', productAttributeRoutes);
 // Health check can also be versioned if needed, but usually kept root
 router.use('/health', healthRoutes);
 
