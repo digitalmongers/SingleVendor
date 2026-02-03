@@ -2,6 +2,7 @@ import SmsGatewayService from '../services/smsGateway.service.js';
 import catchAsync from '../utils/catchAsync.js';
 import ApiResponse from '../utils/apiResponse.js';
 import { HTTP_STATUS } from '../constants.js';
+import AuditLogger from '../utils/audit.js';
 
 class SmsGatewayController {
     getAllGateways = catchAsync(async (req, res) => {
@@ -16,6 +17,13 @@ class SmsGatewayController {
             req.user?._id || req.admin?._id,
             req.role === 'admin' ? 'Admin' : 'Employee'
         );
+
+        // Audit Log
+        AuditLogger.log('UPDATE_SMS_GATEWAY', 'THIRD_PARTY_CONFIG', {
+            gateway: req.params.name,
+            updatedBy: req.user?._id || req.admin?._id,
+        });
+
         res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, gateway, 'SMS Gateway updated successfully'));
     });
 }
