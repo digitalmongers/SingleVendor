@@ -59,7 +59,14 @@ const securityMiddleware = (app) => {
     cors({
       origin: function (origin, callback) {
         // Allow requests with no origin (like mobile apps or curl)
-        if (!origin) return callback(null, true);
+        if (!origin) {
+          if (env.NODE_ENV === 'development') Logger.debug('CORS: No origin detected, allowing request');
+          return callback(null, true);
+        }
+
+        if (env.NODE_ENV === 'development') {
+          Logger.debug(`CORS: Origin [${origin}] detected`);
+        }
 
         // Normalize origin (Remove trailing slashes)
         const normalizedOrigin = origin.replace(/\/$/, "");

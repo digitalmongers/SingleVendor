@@ -32,6 +32,8 @@ import systemSettingRoutes from './systemSetting.routes.js';
 import productAttributeRoutes from './productAttribute.routes.js';
 import productRoutes from './product.routes.js';
 import couponRoutes from './coupon.routes.js';
+import adminFlashDealRoutes from './adminFlashDeal.routes.js';
+import flashDealRoutes from './flashDeal.routes.js';
 
 const router = express.Router();
 
@@ -71,6 +73,8 @@ router.use('/system-settings', systemSettingRoutes);
 router.use('/product-attributes', productAttributeRoutes);
 router.use('/products', productRoutes);
 router.use('/coupons', couponRoutes);
+router.use('/admin/flash-deals', adminFlashDealRoutes);
+router.use('/flash-deals', flashDealRoutes);
 // Health check can also be versioned if needed, but usually kept root
 router.use('/health', healthRoutes);
 

@@ -64,7 +64,8 @@ try {
 
 const app = express();
 
-
+// 1. Elite Security Stack (Must be first to handle CORS preflights)
+securityMiddleware(app);
 
 /**
  * PRODUCTION-GRADE MIDDLEWARE STACK
@@ -82,9 +83,6 @@ app.use(requestLogger);
 
 // Global Response Formatter (Senior/Principal Pattern)
 app.use(responseHandler);
-
-// Elite Security Stack
-securityMiddleware(app);
 
 // Documentation
 setupSwagger(app);
