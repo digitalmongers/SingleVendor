@@ -11,6 +11,7 @@ import { parseProductExcel } from '../utils/excelParser.util.js';
 import { uploadImageFromUrl, uploadMultipleImagesFromUrls, deleteMultipleImages } from '../utils/imageUpload.util.js';
 import Logger from '../utils/logger.js';
 import { generateProductImportTemplate } from '../utils/excelTemplate.util.js';
+import FlashDealService from './flashDeal.service.js';
 
 class ProductService {
     async createProduct(data) {
@@ -91,7 +92,7 @@ class ProductService {
         if (!product) {
             throw new AppError('Product not found or unavailable', HTTP_STATUS.NOT_FOUND);
         }
-        return product;
+        return await FlashDealService.enrichProductsWithFlashDeals(product);
     }
 
     async getProductById(id) {
@@ -161,8 +162,10 @@ class ProductService {
         const filter = { isFeatured: true, status: 'active', isActive: true };
         const products = await ProductRepository.findActive(filter, { createdAt: -1 }, 1, parseInt(limit));
 
-        await Cache.set(cacheKey, products, 600);
-        return products;
+        const enrichedProducts = await FlashDealService.enrichProductsWithFlashDeals(products);
+
+        await Cache.set(cacheKey, enrichedProducts, 600);
+        return enrichedProducts;
     }
 
     async getPublicProducts(query) {
@@ -205,8 +208,10 @@ class ProductService {
         const products = await ProductRepository.findActive(filter, sortOption, parseInt(page), parseInt(limit));
         const total = await ProductRepository.count({ ...filter, status: 'active', isActive: true });
 
+        const enrichedProducts = await FlashDealService.enrichProductsWithFlashDeals(products);
+
         const result = {
-            products,
+            products: enrichedProducts,
             total,
             page: parseInt(page),
             limit: parseInt(limit),
@@ -384,15 +389,17 @@ class ProductService {
             isActive: true
         });
 
+        const enrichedProducts = await FlashDealService.enrichProductsWithFlashDeals(products);
+
         const result = {
-            products,
+            products: enrichedProducts,
             total,
             page: parseInt(page),
             limit: parseInt(limit),
             totalPages: Math.ceil(total / limit)
         };
 
-        // Cache search results for 10 minutes
+        // Cache for 10 minutes
         await Cache.set(cacheKey, result, 600);
         return result;
     }
@@ -411,10 +418,11 @@ class ProductService {
         if (cached) return cached;
 
         const products = await ProductRepository.findSimilarByTags(product.searchTags, productId, limit);
+        const enrichedProducts = await FlashDealService.enrichProductsWithFlashDeals(products);
 
         // Cache similar products for 30 minutes
-        await Cache.set(cacheKey, products, 1800);
-        return products;
+        await Cache.set(cacheKey, enrichedProducts, 1800);
+        return enrichedProducts;
     }
 
     async invalidateCache() {
