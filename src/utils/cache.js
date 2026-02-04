@@ -11,7 +11,8 @@ class Cache {
   async set(key, value, ttl = 3600) {
     try {
       const stringValue = JSON.stringify(value);
-      await redisClient.set(key, stringValue, 'EX', ttl);
+      const cleanTTL = Math.floor(Number(ttl)) || 3600;
+      await redisClient.set(key, stringValue, 'EX', cleanTTL);
       Logger.debug(`Cache Set: ${key}`);
     } catch (error) {
       Logger.error(`Cache Set Error: ${key}`, { error: error.message });
