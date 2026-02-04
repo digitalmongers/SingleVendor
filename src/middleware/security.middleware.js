@@ -116,7 +116,7 @@ const securityMiddleware = (app) => {
 
   // 5. Rate limiting
   const limiter = rateLimit({
-    max: 10000, // Enterprise scale: Limit each IP per window
+    max: 100000, // Enterprise scale: Limit each IP per window
     windowMs: 60 * 60 * 1000, // 1 hour
     message: {
       status: HTTP_STATUS.TOO_MANY_REQUESTS,
