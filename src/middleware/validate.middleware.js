@@ -13,10 +13,18 @@ const validate = (schema) => (req, res, next) => {
       params: req.params,
     });
 
-    // Replace req data with validated and parsed data (important for type coercion)
+    // Replace req data with validated and parsed data
+    // Note: req.query and req.params are sometimes read-only getters on certain environments
     req.body = validData.body;
-    req.query = validData.query;
-    req.params = validData.params;
+
+    // We update req.query/params only if needed, or just let them be
+    // Usually req.body is what needs the transformation most in POST requests
+    if (validData.query && Object.keys(validData.query).length > 0) {
+      try { req.query = validData.query; } catch (e) { /* ignore read-only */ }
+    }
+    if (validData.params && Object.keys(validData.params).length > 0) {
+      try { req.params = validData.params; } catch (e) { /* ignore read-only */ }
+    }
 
     next();
   } catch (error) {
