@@ -20,12 +20,16 @@ const validate = (schema) => (req, res, next) => {
 
     next();
   } catch (error) {
-    const errors = error.errors.map((err) => ({
-      path: err.path.join('.'),
-      message: err.message,
-    }));
+    if (error.name === 'ZodError') {
+      const errors = error.errors.map((err) => ({
+        path: err.path.join('.'),
+        message: err.message,
+      }));
+      return next(new AppError('Validation failed', HTTP_STATUS.BAD_REQUEST, 'VALIDATION_ERROR', errors));
+    }
 
-    next(new AppError('Validation failed', HTTP_STATUS.BAD_REQUEST, 'VALIDATION_ERROR', errors));
+    // Pass other errors to the global error handler
+    next(error);
   }
 };
 
