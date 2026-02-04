@@ -29,8 +29,11 @@ class AdminService {
    * Admin Login logic with "Remember Me"
    */
   async login(email, password, rememberMe = false) {
+    // Sanitize input
+    const sanitizedEmail = email.toLowerCase().trim();
+
     // Need full model for matchPassword
-    const admin = await AdminRepository.findByEmail(email, true);
+    const admin = await AdminRepository.findByEmail(sanitizedEmail, true);
 
     if (!admin) {
       throw new AppError(ERROR_MESSAGES.INVALID_CREDENTIALS, HTTP_STATUS.UNAUTHORIZED, 'INVALID_ADMIN_AUTH');
