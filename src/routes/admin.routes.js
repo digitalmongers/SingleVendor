@@ -78,7 +78,7 @@ const authLimiter = rateLimit({
   }
 });
 
-router.post('/login', authLimiter, lockRequest('admin-login'), validate(loginSchema), AdminController.login);
+router.post('/login', authLimiter, validate(loginSchema), AdminController.login);
 router.post('/refresh-token', AdminController.refreshToken); // New Route
 router.post('/forgot-password', authLimiter, lockRequest('admin-forgot-password'), validate(forgotPasswordSchema), AdminController.forgotPassword);
 router.post('/verify-otp', authLimiter, validate(verifyOtpSchema), AdminController.verifyOtp);

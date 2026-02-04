@@ -35,12 +35,16 @@ const validate = (schema) => (req, res, next) => {
 
     next();
   } catch (error) {
-    if (error.name === 'ZodError') {
-      const errors = error.errors.map((err) => ({
-        path: err.path.join('.'),
-        message: err.message,
-      }));
-      return next(new AppError('Validation failed', HTTP_STATUS.BAD_REQUEST, 'VALIDATION_ERROR', errors));
+    if (error.name === 'ZodError' || error instanceof Error && error.name === 'ZodError') {
+      const errorList = error.errors || error.issues || [];
+      const formattedErrors = Array.isArray(errorList)
+        ? errorList.map((err) => ({
+          path: err.path ? err.path.join('.') : 'unknown',
+          message: err.message || 'Validation failed',
+        }))
+        : [];
+
+      return next(new AppError('Validation failed', HTTP_STATUS.BAD_REQUEST, 'VALIDATION_ERROR', formattedErrors));
     }
 
     // Pass other errors to the global error handler
