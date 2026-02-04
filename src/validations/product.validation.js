@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { REGEX } from '../constants.js';
 
-const productSchema = {
+const productSchema = z.object({
     body: z.object({
         name: z.string().min(1, 'Product name is required'),
         description: z.string().min(1, 'Description is required'),
@@ -56,25 +56,25 @@ const productSchema = {
         isFeatured: z.boolean().default(false),
         videoLink: z.string().url().optional()
     })
-};
+});
 
-const updateProductSchema = {
-    body: productSchema.body.partial()
-};
+const updateProductSchema = z.object({
+    body: productSchema.shape.body.partial()
+});
 
-const toggleStatusSchema = {
+const toggleStatusSchema = z.object({
     body: z.object({
         status: z.enum(['active', 'inactive']).optional(),
         isActive: z.boolean().optional()
     }).refine(data => data.status !== undefined || data.isActive !== undefined, {
         message: "Either status or isActive must be provided"
     })
-};
+});
 
-const restockSchema = {
+const restockSchema = z.object({
     body: z.object({
         quantity: z.number().int().positive('Restock quantity must be a positive integer')
     })
-};
+});
 
 export { productSchema, updateProductSchema, toggleStatusSchema, restockSchema };
