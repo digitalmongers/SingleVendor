@@ -34,6 +34,7 @@ import productRoutes from './product.routes.js';
 import couponRoutes from './coupon.routes.js';
 import adminFlashDealRoutes from './adminFlashDeal.routes.js';
 import flashDealRoutes from './flashDeal.routes.js';
+import customerRoutes from './customer.routes.js';
 
 const router = express.Router();
 
@@ -75,6 +76,7 @@ router.use('/products', productRoutes);
 router.use('/coupons', couponRoutes);
 router.use('/admin/flash-deals', adminFlashDealRoutes);
 router.use('/flash-deals', flashDealRoutes);
+router.use('/customers', customerRoutes);
 // Health check can also be versioned if needed, but usually kept root
 router.use('/health', healthRoutes);
 

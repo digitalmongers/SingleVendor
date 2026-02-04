@@ -6,8 +6,8 @@ import ExcelJS from 'exceljs';
  */
 export const generateProductImportTemplate = async () => {
     const workbook = new ExcelJS.Workbook();
-    workbook.creator = 'MultiVendor System';
-    workbook.lastModifiedBy = 'MultiVendor System';
+    workbook.creator = 'singlevendor System';
+    workbook.lastModifiedBy = 'singlevendor System';
     workbook.created = new Date();
     workbook.modified = new Date();
 
