@@ -64,6 +64,9 @@ try {
 
 const app = express();
 
+// Enable trust proxy for express-rate-limit (Render usage)
+app.set('trust proxy', 1);
+
 // 1. Elite Security Stack (Must be first to handle CORS preflights)
 securityMiddleware(app);
 

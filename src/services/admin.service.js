@@ -9,6 +9,7 @@ import Logger from '../utils/logger.js';
 import EmailService from './email.service.js';
 import crypto from 'crypto';
 import Cache from '../utils/cache.js';
+import { comparePassword } from '../utils/security.js';
 
 import { uploadToCloudinary, deleteFromCloudinary } from '../utils/cloudinary.js';
 
@@ -40,7 +41,7 @@ class AdminService {
       throw new AppError('Account is temporarily locked due to too many failed login attempts. Please try again later.', HTTP_STATUS.TOO_MANY_REQUESTS, 'ACCOUNT_LOCKED');
     }
 
-    const isMatch = await admin.matchPassword(password);
+    const isMatch = await comparePassword(admin.password, password);
     if (!isMatch) {
       // Increment login attempts
       const attempts = (admin.loginAttempts || 0) + 1;
