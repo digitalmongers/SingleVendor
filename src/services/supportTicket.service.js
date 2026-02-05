@@ -31,12 +31,15 @@ class SupportTicketService {
         return ticket;
     }
 
-    async getCustomerTickets(customerId) {
-        return await SupportTicketRepository.findByCustomer(customerId);
+    async getCustomerTickets(customerId, query = {}) {
+        const { page = 1, limit = 10 } = query;
+        return await SupportTicketRepository.findByCustomer(customerId, parseInt(page), parseInt(limit));
     }
 
-    async getAllTickets(query) {
-        return await SupportTicketRepository.findAll(query);
+    async getAllTickets(query = {}) {
+        const { page = 1, limit = 10, ...filter } = query;
+        // Clean filter to only include allowed keys if necessary, or pass as is if trusted
+        return await SupportTicketRepository.findAll(filter, parseInt(page), parseInt(limit));
     }
 
     async getDetailedStats() {

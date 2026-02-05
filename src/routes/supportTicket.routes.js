@@ -7,7 +7,7 @@ import uploadMiddleware from '../middleware/upload.middleware.js';
 import cacheMiddleware from '../middleware/cache.middleware.js';
 import validate from '../middleware/validate.middleware.js';
 import lockRequest from '../middleware/idempotency.middleware.js';
-import { submitTicketSchema, replyToTicketSchema } from '../validations/supportTicket.validation.js';
+import { submitTicketSchema, replyToTicketSchema, getTicketsSchema } from '../validations/supportTicket.validation.js';
 
 const router = express.Router();
 
@@ -26,6 +26,7 @@ router.post(
 router.get(
     '/my-tickets',
     protectCustomer,
+    validate(getTicketsSchema),
     cacheMiddleware(1800), // Cache for 30 mins
     SupportTicketController.getMyTickets
 );
@@ -36,6 +37,7 @@ router.get(
 router.get(
     '/admin/all',
     authorizeStaff(SYSTEM_PERMISSIONS.HELP_SUPPORT),
+    validate(getTicketsSchema),
     cacheMiddleware(600), // Admin view cache for 10 mins
     SupportTicketController.getAllTickets
 );
