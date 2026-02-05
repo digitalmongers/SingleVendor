@@ -46,13 +46,21 @@ const lockRequest = (ttl = 5) => {
       await Cache.set(lockKey, 'locked', ttl);
 
       // 4. Auto-cleanup lock after response completes (success or error)
+      let cleanupDone = false;
       const cleanupLock = async () => {
+        if (cleanupDone) return; // Prevent duplicate cleanup
+        cleanupDone = true;
+
         try {
           await Cache.del(lockKey);
           Logger.debug(`Lock released: ${lockKey}`);
         } catch (err) {
           Logger.error('Lock cleanup failed', { error: err.message });
         }
+
+        // Remove both listeners to prevent memory leaks
+        res.removeListener('finish', cleanupLock);
+        res.removeListener('close', cleanupLock);
       };
 
       // Listen for response completion

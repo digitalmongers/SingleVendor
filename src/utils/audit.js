@@ -13,7 +13,21 @@ class AuditLogger {
       ip: context.ip,
       timestamp: new Date().toISOString(),
     };
-    Logger[level](`AUDIT: ${action}`, auditData);
+
+    // Call appropriate Logger method based on level
+    switch (level) {
+      case 'error':
+        Logger.error(`AUDIT: ${action}`, auditData);
+        break;
+      case 'warn':
+        Logger.warn(`AUDIT: ${action}`, auditData);
+        break;
+      case 'debug':
+        Logger.debug(`AUDIT: ${action}`, auditData);
+        break;
+      default:
+        Logger.info(`AUDIT: ${action}`, auditData);
+    }
   }
 
   static security(event, meta = {}) { this.log(event, 'SECURITY', meta, 'warn'); }

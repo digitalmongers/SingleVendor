@@ -53,6 +53,21 @@ class Cache {
   }
 
   /**
+   * Get keys by pattern
+   * @param {string} pattern
+   * @returns {Promise<string[]>}
+   */
+  async keys(pattern) {
+    try {
+      const keys = await redisClient.keys(pattern);
+      return keys || [];
+    } catch (error) {
+      Logger.error(`Cache Keys Error: ${pattern}`, { error: error.message });
+      return [];
+    }
+  }
+
+  /**
    * Delete keys by pattern
    * @param {string} pattern
    */
