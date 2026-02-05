@@ -6,6 +6,7 @@ const supportTicketSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Customer',
             required: [true, 'Customer is required'],
+            index: true,
         },
         ticketId: {
             type: String,
@@ -34,6 +35,7 @@ const supportTicketSchema = new mongoose.Schema(
             type: String,
             enum: ['Open', 'In Progress', 'Resolved'],
             default: 'Open',
+            index: true,
         },
         adminReply: {
             type: String,
@@ -44,6 +46,9 @@ const supportTicketSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+// Index for performance on sorting
+supportTicketSchema.index({ createdAt: -1 });
 
 // Pre-save hook to generate Ticket ID (e.g., TK1001)
 supportTicketSchema.pre('validate', async function (next) {

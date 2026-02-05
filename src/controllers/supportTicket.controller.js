@@ -29,7 +29,7 @@ export const submitTicket = catchAsync(async (req, res) => {
  * @access  Private (Customer)
  */
 export const getMyTickets = catchAsync(async (req, res) => {
-    const tickets = await SupportTicketService.getCustomerTickets(req.user._id);
+    const tickets = await SupportTicketService.getCustomerTickets(req.user._id, req.query);
     res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, tickets));
 });
 

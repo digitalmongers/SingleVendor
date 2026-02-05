@@ -4,6 +4,11 @@ import { z } from 'zod';
  * Support Ticket Validation Schemas
  */
 
+const paginationQuerySchema = z.object({
+    page: z.string().optional().transform((v) => (v ? parseInt(v) : 1)).pipe(z.number().int().positive().default(1)),
+    limit: z.string().optional().transform((v) => (v ? parseInt(v) : 10)).pipe(z.number().int().positive().max(100).default(10)),
+});
+
 export const submitTicketSchema = z.object({
     body: z.object({
         subject: z.string({
@@ -27,7 +32,15 @@ export const replyToTicketSchema = z.object({
     }),
 });
 
+export const getTicketsSchema = z.object({
+    query: paginationQuerySchema.extend({
+        status: z.enum(['Open', 'In Progress', 'Resolved']).optional(),
+        priority: z.enum(['Low', 'Medium', 'High', 'Urgent']).optional(),
+    }),
+});
+
 export default {
     submitTicketSchema,
     replyToTicketSchema,
+    getTicketsSchema,
 };
