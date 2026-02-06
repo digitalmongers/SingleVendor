@@ -12,8 +12,8 @@ router.use(authorizeStaff(SYSTEM_PERMISSIONS.SYSTEM_SETTINGS));
 router.get('/', CustomerEmailTemplateController.getAllTemplates);
 
 router.route('/:event')
-    .get(CustomerEmailTemplateController.getTemplateByEvent)
-    .patch(CustomerEmailTemplateController.updateTemplate);
+  .get(CustomerEmailTemplateController.getTemplateByEvent)
+  .patch(CustomerEmailTemplateController.updateTemplate);
 
 router.patch('/:event/logo', uploadMiddleware.single('logo'), CustomerEmailTemplateController.updateLogo);
 router.patch('/:event/icon', uploadMiddleware.single('icon'), CustomerEmailTemplateController.updateIcon);

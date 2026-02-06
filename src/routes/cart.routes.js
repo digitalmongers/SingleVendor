@@ -13,24 +13,24 @@ router.use(optionalProtect);
 router.get('/', CartController.getCart);
 
 router.post(
-    '/add',
-    lockRequest(),
-    validate(CartValidation.addToCart),
-    CartController.addToCart
+  '/add',
+  lockRequest(),
+  validate(CartValidation.addToCart),
+  CartController.addToCart
 );
 
 router.patch(
-    '/update',
-    lockRequest(),
-    validate(CartValidation.updateCartItem),
-    CartController.updateCartItem
+  '/update',
+  lockRequest(),
+  validate(CartValidation.updateCartItem),
+  CartController.updateCartItem
 );
 
 router.delete(
-    '/remove',
-    lockRequest(),
-    validate(CartValidation.removeFromCart),
-    CartController.removeFromCart
+  '/remove',
+  lockRequest(),
+  validate(CartValidation.removeFromCart),
+  CartController.removeFromCart
 );
 
 router.delete('/clear', CartController.clearCart);

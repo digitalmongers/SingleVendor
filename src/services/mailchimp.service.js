@@ -53,7 +53,7 @@ class MailchimpService {
     if (!this.isConfigured) return false;
     try {
       const response = await mailchimp.ping.get();
-      return response.health_status === "Everything's Chimpy!";
+      return response.health_status === 'Everything\'s Chimpy!';
     } catch (error) {
       return false;
     }

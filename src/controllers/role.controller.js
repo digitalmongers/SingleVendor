@@ -9,8 +9,8 @@ import { HTTP_STATUS } from '../constants.js';
  * @access  Private (Admin)
  */
 export const createRole = catchAsync(async (req, res) => {
-    const role = await RoleService.createRole(req.body);
-    res.status(HTTP_STATUS.CREATED).json(new ApiResponse(HTTP_STATUS.CREATED, role, 'Role created successfully'));
+  const role = await RoleService.createRole(req.body);
+  res.status(HTTP_STATUS.CREATED).json(new ApiResponse(HTTP_STATUS.CREATED, role, 'Role created successfully'));
 });
 
 /**
@@ -19,8 +19,8 @@ export const createRole = catchAsync(async (req, res) => {
  * @access  Private (Admin)
  */
 export const getAllRoles = catchAsync(async (req, res) => {
-    const roles = await RoleService.getAllRoles();
-    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, roles));
+  const roles = await RoleService.getAllRoles();
+  res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, roles));
 });
 
 /**
@@ -29,8 +29,8 @@ export const getAllRoles = catchAsync(async (req, res) => {
  * @access  Private (Admin)
  */
 export const updateRole = catchAsync(async (req, res) => {
-    const role = await RoleService.updateRole(req.params.id, req.body);
-    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, role, 'Role updated successfully'));
+  const role = await RoleService.updateRole(req.params.id, req.body);
+  res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, role, 'Role updated successfully'));
 });
 
 /**
@@ -39,13 +39,13 @@ export const updateRole = catchAsync(async (req, res) => {
  * @access  Private (Admin)
  */
 export const deleteRole = catchAsync(async (req, res) => {
-    await RoleService.deleteRole(req.params.id);
-    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, null, 'Role deleted successfully'));
+  await RoleService.deleteRole(req.params.id);
+  res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, null, 'Role deleted successfully'));
 });
 
 export default {
-    createRole,
-    getAllRoles,
-    updateRole,
-    deleteRole,
+  createRole,
+  getAllRoles,
+  updateRole,
+  deleteRole,
 };

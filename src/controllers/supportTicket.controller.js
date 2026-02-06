@@ -12,15 +12,15 @@ import { jsonToCsv } from '../utils/csvGenerator.js';
  * @access  Private (Customer)
  */
 export const submitTicket = catchAsync(async (req, res) => {
-    const ticket = await SupportTicketService.submitTicket(req.user._id, req.body, req.file);
+  const ticket = await SupportTicketService.submitTicket(req.user._id, req.body, req.file);
 
-    await AuditLogger.log(
-        'SUPPORT_TICKET_SUBMITTED',
-        `Ticket ${ticket.ticketId} submitted by customer ${req.user.name}`,
-        { ticketId: ticket.ticketId, customerId: req.user._id }
-    );
+  await AuditLogger.log(
+    'SUPPORT_TICKET_SUBMITTED',
+    `Ticket ${ticket.ticketId} submitted by customer ${req.user.name}`,
+    { ticketId: ticket.ticketId, customerId: req.user._id }
+  );
 
-    res.status(HTTP_STATUS.CREATED).json(new ApiResponse(HTTP_STATUS.CREATED, ticket, 'Ticket submitted successfully'));
+  res.status(HTTP_STATUS.CREATED).json(new ApiResponse(HTTP_STATUS.CREATED, ticket, 'Ticket submitted successfully'));
 });
 
 /**
@@ -29,8 +29,8 @@ export const submitTicket = catchAsync(async (req, res) => {
  * @access  Private (Customer)
  */
 export const getMyTickets = catchAsync(async (req, res) => {
-    const tickets = await SupportTicketService.getCustomerTickets(req.user._id, req.query);
-    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, tickets));
+  const tickets = await SupportTicketService.getCustomerTickets(req.user._id, req.query);
+  res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, tickets));
 });
 
 /**
@@ -39,8 +39,8 @@ export const getMyTickets = catchAsync(async (req, res) => {
  * @access  Private (Admin)
  */
 export const getAllTickets = catchAsync(async (req, res) => {
-    const result = await SupportTicketService.getAllTickets(req.query);
-    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, result));
+  const result = await SupportTicketService.getAllTickets(req.query);
+  res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, result));
 });
 
 /**
@@ -49,8 +49,8 @@ export const getAllTickets = catchAsync(async (req, res) => {
  * @access  Private (Admin)
  */
 export const getStats = catchAsync(async (req, res) => {
-    const stats = await SupportTicketService.getDetailedStats();
-    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, stats));
+  const stats = await SupportTicketService.getDetailedStats();
+  res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, stats));
 });
 
 /**
@@ -59,35 +59,35 @@ export const getStats = catchAsync(async (req, res) => {
  * @access  Private (Admin)
  */
 export const exportTickets = catchAsync(async (req, res) => {
-    const tickets = await SupportTicketService.getTicketsForExport();
+  const tickets = await SupportTicketService.getTicketsForExport();
 
-    const headers = [
-        'Ticket ID',
-        'Customer Name',
-        'Customer Email',
-        'Subject',
-        'Priority',
-        'Status',
-        'Created At',
-        'Resolved At',
-    ];
+  const headers = [
+    'Ticket ID',
+    'Customer Name',
+    'Customer Email',
+    'Subject',
+    'Priority',
+    'Status',
+    'Created At',
+    'Resolved At',
+  ];
 
-    const fields = [
-        'ticketId',
-        'customer.name',
-        'customer.email',
-        'subject',
-        'priority',
-        'status',
-        'createdAt',
-        'replyDate',
-    ];
+  const fields = [
+    'ticketId',
+    'customer.name',
+    'customer.email',
+    'subject',
+    'priority',
+    'status',
+    'createdAt',
+    'replyDate',
+  ];
 
-    const csv = jsonToCsv(tickets, headers, fields);
+  const csv = jsonToCsv(tickets, headers, fields);
 
-    res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', `attachment; filename=support_tickets_${new Date().toISOString().split('T')[0]}.csv`);
-    res.status(200).send(csv);
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', `attachment; filename=support_tickets_${new Date().toISOString().split('T')[0]}.csv`);
+  res.status(200).send(csv);
 });
 
 /**
@@ -96,23 +96,23 @@ export const exportTickets = catchAsync(async (req, res) => {
  * @access  Private (Admin)
  */
 export const replyToTicket = catchAsync(async (req, res) => {
-    const { adminReply } = req.body;
-    const ticket = await SupportTicketService.replyToTicket(req.params.ticketId, adminReply);
+  const { adminReply } = req.body;
+  const ticket = await SupportTicketService.replyToTicket(req.params.ticketId, adminReply);
 
-    await AuditLogger.log(
-        'SUPPORT_TICKET_REPLIED',
-        `Admin replied to ticket ${ticket.ticketId}`,
-        { ticketId: ticket.ticketId, adminId: req.user._id }
-    );
+  await AuditLogger.log(
+    'SUPPORT_TICKET_REPLIED',
+    `Admin replied to ticket ${ticket.ticketId}`,
+    { ticketId: ticket.ticketId, adminId: req.user._id }
+  );
 
-    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, ticket, 'Reply sent and ticket marked as resolved'));
+  res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, ticket, 'Reply sent and ticket marked as resolved'));
 });
 
 export default {
-    submitTicket,
-    getMyTickets,
-    getAllTickets,
-    getStats,
-    exportTickets,
-    replyToTicket,
+  submitTicket,
+  getMyTickets,
+  getAllTickets,
+  getStats,
+  exportTickets,
+  replyToTicket,
 };

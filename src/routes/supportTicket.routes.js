@@ -15,52 +15,52 @@ const router = express.Router();
  * CUSTOMER ROUTES
  */
 router.post(
-    '/submit',
-    protectCustomer,
-    lockRequest(5),
-    uploadMiddleware.single('attachment'),
-    validate(submitTicketSchema),
-    SupportTicketController.submitTicket
+  '/submit',
+  protectCustomer,
+  lockRequest(5),
+  uploadMiddleware.single('attachment'),
+  validate(submitTicketSchema),
+  SupportTicketController.submitTicket
 );
 
 router.get(
-    '/my-tickets',
-    protectCustomer,
-    validate(getTicketsSchema),
-    cacheMiddleware(1800), // Cache for 30 mins
-    SupportTicketController.getMyTickets
+  '/my-tickets',
+  protectCustomer,
+  validate(getTicketsSchema),
+  cacheMiddleware(1800), // Cache for 30 mins
+  SupportTicketController.getMyTickets
 );
 
 /**
  * ADMIN ROUTES
  */
 router.get(
-    '/admin/all',
-    authorizeStaff(SYSTEM_PERMISSIONS.HELP_SUPPORT),
-    validate(getTicketsSchema),
-    cacheMiddleware(600), // Admin view cache for 10 mins
-    SupportTicketController.getAllTickets
+  '/admin/all',
+  authorizeStaff(SYSTEM_PERMISSIONS.HELP_SUPPORT),
+  validate(getTicketsSchema),
+  cacheMiddleware(600), // Admin view cache for 10 mins
+  SupportTicketController.getAllTickets
 );
 
 router.get(
-    '/admin/stats',
-    authorizeStaff(SYSTEM_PERMISSIONS.HELP_SUPPORT),
-    cacheMiddleware(600),
-    SupportTicketController.getStats
+  '/admin/stats',
+  authorizeStaff(SYSTEM_PERMISSIONS.HELP_SUPPORT),
+  cacheMiddleware(600),
+  SupportTicketController.getStats
 );
 
 router.get(
-    '/admin/export',
-    authorizeStaff(SYSTEM_PERMISSIONS.HELP_SUPPORT),
-    SupportTicketController.exportTickets // Export should NOT be cached
+  '/admin/export',
+  authorizeStaff(SYSTEM_PERMISSIONS.HELP_SUPPORT),
+  SupportTicketController.exportTickets // Export should NOT be cached
 );
 
 router.patch(
-    '/admin/:ticketId/reply',
-    authorizeStaff(SYSTEM_PERMISSIONS.HELP_SUPPORT),
-    lockRequest(5),
-    validate(replyToTicketSchema),
-    SupportTicketController.replyToTicket
+  '/admin/:ticketId/reply',
+  authorizeStaff(SYSTEM_PERMISSIONS.HELP_SUPPORT),
+  lockRequest(5),
+  validate(replyToTicketSchema),
+  SupportTicketController.replyToTicket
 );
 
 export default router;

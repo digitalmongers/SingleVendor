@@ -26,8 +26,8 @@ router.get('/public/:id', ProductController.getProductByIdPublic);
 router.use(authorizeStaff(SYSTEM_PERMISSIONS.PRODUCT_MANAGEMENT));
 
 router.route('/')
-    .post(lockRequest('create_product'), validate(productSchema), ProductController.createProduct)
-    .get(ProductController.getAllProducts);
+  .post(lockRequest('create_product'), validate(productSchema), ProductController.createProduct)
+  .get(ProductController.getAllProducts);
 
 // Bulk Management
 router.get('/admin/import-template', ProductController.getImportTemplate);
@@ -38,9 +38,9 @@ router.get('/admin/low-stock', ProductController.getLowStockProducts);
 router.patch('/:id/restock', lockRequest('restock_product'), validate(restockSchema), ProductController.restockProduct);
 
 router.route('/:id')
-    .get(ProductController.getProductById)
-    .patch(lockRequest('update_product'), validate(updateProductSchema), ProductController.updateProduct)
-    .delete(lockRequest('delete_product'), ProductController.deleteProduct);
+  .get(ProductController.getProductById)
+  .patch(lockRequest('update_product'), validate(updateProductSchema), ProductController.updateProduct)
+  .delete(lockRequest('delete_product'), ProductController.deleteProduct);
 
 router.patch('/:id/status', lockRequest('toggle_product_status'), validate(toggleStatusSchema), ProductController.toggleStatus);
 router.patch('/:id/featured', lockRequest('toggle_product_featured'), ProductController.toggleFeatured);

@@ -12,12 +12,12 @@ const router = express.Router();
  */
 router.use('/roles', authorizeStaff(SYSTEM_PERMISSIONS.EMPLOYEE_MANAGEMENT));
 router.route('/roles')
-    .post(RoleController.createRole)
-    .get(RoleController.getAllRoles);
+  .post(RoleController.createRole)
+  .get(RoleController.getAllRoles);
 
 router.route('/roles/:id')
-    .patch(RoleController.updateRole)
-    .delete(RoleController.deleteRole);
+  .patch(RoleController.updateRole)
+  .delete(RoleController.deleteRole);
 
 /**
  * EMPLOYEE MANAGEMENT (Admin Only)
@@ -28,26 +28,26 @@ router.get('/employees/stats', EmployeeController.getStats);
 router.get('/employees/export', EmployeeController.exportEmployees);
 
 router.route('/employees')
-    .post(
-        uploadMiddleware.fields([
-            { name: 'profileImage', maxCount: 1 },
-            { name: 'identityFront', maxCount: 1 },
-            { name: 'identityBack', maxCount: 1 }
-        ]),
-        EmployeeController.registerEmployee
-    )
-    .get(EmployeeController.getAllEmployees);
+  .post(
+    uploadMiddleware.fields([
+      { name: 'profileImage', maxCount: 1 },
+      { name: 'identityFront', maxCount: 1 },
+      { name: 'identityBack', maxCount: 1 }
+    ]),
+    EmployeeController.registerEmployee
+  )
+  .get(EmployeeController.getAllEmployees);
 
 router.route('/employees/:id')
-    .patch(
-        uploadMiddleware.fields([
-            { name: 'profileImage', maxCount: 1 },
-            { name: 'identityFront', maxCount: 1 },
-            { name: 'identityBack', maxCount: 1 }
-        ]),
-        EmployeeController.updateEmployee
-    )
-    .delete(EmployeeController.deleteEmployee);
+  .patch(
+    uploadMiddleware.fields([
+      { name: 'profileImage', maxCount: 1 },
+      { name: 'identityFront', maxCount: 1 },
+      { name: 'identityBack', maxCount: 1 }
+    ]),
+    EmployeeController.updateEmployee
+  )
+  .delete(EmployeeController.deleteEmployee);
 
 router.patch('/employees/:id/status', EmployeeController.toggleStatus);
 

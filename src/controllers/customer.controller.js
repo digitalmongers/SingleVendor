@@ -13,23 +13,23 @@ import Logger from '../utils/logger.js';
  * @access  Public
  */
 export const login = async (req, res) => {
-    Logger.info(`Login attempt for email: ${req.body.email}`);
-    const { email, password, guestId } = req.body;
-    const { customer, accessToken, refreshToken } = await CustomerService.login(email, password, guestId);
+  Logger.info(`Login attempt for email: ${req.body.email}`);
+  const { email, password, guestId } = req.body;
+  const { customer, accessToken, refreshToken } = await CustomerService.login(email, password, guestId);
 
-    const settings = await SystemSettingRepository.getSettings();
-    const isProduction = settings.appMode === 'Live';
+  const settings = await SystemSettingRepository.getSettings();
+  const isProduction = settings.appMode === 'Live';
 
-    const cookieOptions = {
-        httpOnly: true,
-        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
-    };
+  const cookieOptions = {
+    httpOnly: true,
+    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict'
+  };
 
-    res.status(HTTP_STATUS.OK)
-        .cookie('token', accessToken, cookieOptions)
-        .json(new ApiResponse(HTTP_STATUS.OK, { customer, token: accessToken }, SUCCESS_MESSAGES.LOGIN_SUCCESS));
+  res.status(HTTP_STATUS.OK)
+    .cookie('token', accessToken, cookieOptions)
+    .json(new ApiResponse(HTTP_STATUS.OK, { customer, token: accessToken }, SUCCESS_MESSAGES.LOGIN_SUCCESS));
 };
 
 /**
@@ -38,12 +38,12 @@ export const login = async (req, res) => {
  * @access  Public
  */
 export const signup = async (req, res) => {
-    Logger.info(`Signup request received for email: ${req.body.email}`);
-    const result = await CustomerService.signup(req.body);
+  Logger.info(`Signup request received for email: ${req.body.email}`);
+  const result = await CustomerService.signup(req.body);
 
-    res.status(HTTP_STATUS.CREATED).json(
-        new ApiResponse(HTTP_STATUS.CREATED, result, 'Verification code sent to your email.')
-    );
+  res.status(HTTP_STATUS.CREATED).json(
+    new ApiResponse(HTTP_STATUS.CREATED, result, 'Verification code sent to your email.')
+  );
 };
 
 /**
@@ -52,13 +52,13 @@ export const signup = async (req, res) => {
  * @access  Public
  */
 export const verifyOtp = async (req, res) => {
-    Logger.info(`OTP verification request for: ${req.body.email}`);
-    const { email, code } = req.body;
-    const result = await CustomerService.verifyOtp(email, code);
+  Logger.info(`OTP verification request for: ${req.body.email}`);
+  const { email, code } = req.body;
+  const result = await CustomerService.verifyOtp(email, code);
 
-    res.status(HTTP_STATUS.OK).json(
-        new ApiResponse(HTTP_STATUS.OK, result, SUCCESS_MESSAGES.OPERATION_SUCCESS)
-    );
+  res.status(HTTP_STATUS.OK).json(
+    new ApiResponse(HTTP_STATUS.OK, result, SUCCESS_MESSAGES.OPERATION_SUCCESS)
+  );
 };
 
 /**
@@ -67,13 +67,13 @@ export const verifyOtp = async (req, res) => {
  * @access  Public
  */
 export const resendOtp = async (req, res) => {
-    Logger.info(`Resend OTP request for: ${req.body.email}`);
-    const { email } = req.body;
-    const result = await CustomerService.resendOtp(email);
+  Logger.info(`Resend OTP request for: ${req.body.email}`);
+  const { email } = req.body;
+  const result = await CustomerService.resendOtp(email);
 
-    res.status(HTTP_STATUS.OK).json(
-        new ApiResponse(HTTP_STATUS.OK, result, 'Verification code resent.')
-    );
+  res.status(HTTP_STATUS.OK).json(
+    new ApiResponse(HTTP_STATUS.OK, result, 'Verification code resent.')
+  );
 };
 
 
@@ -83,12 +83,12 @@ export const resendOtp = async (req, res) => {
  * @access  Public
  */
 export const forgotPassword = async (req, res) => {
-    const { email } = req.body;
-    const result = await CustomerService.forgotPassword(email);
+  const { email } = req.body;
+  const result = await CustomerService.forgotPassword(email);
 
-    res.status(HTTP_STATUS.OK).json(
-        new ApiResponse(HTTP_STATUS.OK, result, result.message)
-    );
+  res.status(HTTP_STATUS.OK).json(
+    new ApiResponse(HTTP_STATUS.OK, result, result.message)
+  );
 };
 
 /**
@@ -97,12 +97,12 @@ export const forgotPassword = async (req, res) => {
  * @access  Public
  */
 export const verifyResetOtp = async (req, res) => {
-    const { email, code } = req.body;
-    const result = await CustomerService.verifyResetOtp(email, code);
+  const { email, code } = req.body;
+  const result = await CustomerService.verifyResetOtp(email, code);
 
-    res.status(HTTP_STATUS.OK).json(
-        new ApiResponse(HTTP_STATUS.OK, result, result.message)
-    );
+  res.status(HTTP_STATUS.OK).json(
+    new ApiResponse(HTTP_STATUS.OK, result, result.message)
+  );
 };
 
 /**
@@ -111,12 +111,12 @@ export const verifyResetOtp = async (req, res) => {
  * @access  Public
  */
 export const resetPassword = async (req, res) => {
-    const { email, code, newPassword } = req.body;
-    const result = await CustomerService.resetPassword(email, code, newPassword);
+  const { email, code, newPassword } = req.body;
+  const result = await CustomerService.resetPassword(email, code, newPassword);
 
-    res.status(HTTP_STATUS.OK).json(
-        new ApiResponse(HTTP_STATUS.OK, result, result.message)
-    );
+  res.status(HTTP_STATUS.OK).json(
+    new ApiResponse(HTTP_STATUS.OK, result, result.message)
+  );
 };
 
 /**
@@ -125,19 +125,19 @@ export const resetPassword = async (req, res) => {
  * @access  Private (Authenticated)
  */
 export const logout = async (req, res) => {
-    Logger.info(`Logout request received for customerId: ${req.customer?._id}`);
-    const customerId = req.customer?._id;
+  Logger.info(`Logout request received for customerId: ${req.customer?._id}`);
+  const customerId = req.customer?._id;
 
-    if (customerId) {
-        await CustomerService.invalidateAllSessions(customerId);
-    }
+  if (customerId) {
+    await CustomerService.invalidateAllSessions(customerId);
+  }
 
-    res.cookie('token', 'none', {
-        expires: new Date(Date.now() + 10 * 1000),
-        httpOnly: true,
-    });
+  res.cookie('token', 'none', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
 
-    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, {}, SUCCESS_MESSAGES.LOGOUT_SUCCESS));
+  res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, {}, SUCCESS_MESSAGES.LOGOUT_SUCCESS));
 };
 
 /**
@@ -146,12 +146,12 @@ export const logout = async (req, res) => {
  * @access  Private
  */
 export const getMe = async (req, res) => {
-    Logger.info(`getMe request for customer: ${req.customer?._id}`);
-    const customer = await CustomerService.getProfile(req.customer._id);
+  Logger.info(`getMe request for customer: ${req.customer?._id}`);
+  const customer = await CustomerService.getProfile(req.customer._id);
 
-    res.status(HTTP_STATUS.OK).json(
-        new ApiResponse(HTTP_STATUS.OK, customer, SUCCESS_MESSAGES.OPERATION_SUCCESS)
-    );
+  res.status(HTTP_STATUS.OK).json(
+    new ApiResponse(HTTP_STATUS.OK, customer, SUCCESS_MESSAGES.OPERATION_SUCCESS)
+  );
 };
 
 /**
@@ -160,23 +160,23 @@ export const getMe = async (req, res) => {
  * @access  Private
  */
 export const updateProfile = async (req, res) => {
-    Logger.info(`updateProfile request for customer: ${req.customer?._id}`);
-    const customer = await CustomerService.updateProfile(req.customer._id, req.body);
+  Logger.info(`updateProfile request for customer: ${req.customer?._id}`);
+  const customer = await CustomerService.updateProfile(req.customer._id, req.body);
 
-    res.status(HTTP_STATUS.OK).json(
-        new ApiResponse(HTTP_STATUS.OK, customer, 'Profile updated successfully')
-    );
+  res.status(HTTP_STATUS.OK).json(
+    new ApiResponse(HTTP_STATUS.OK, customer, 'Profile updated successfully')
+  );
 };
 
 export default {
-    signup,
-    verifyOtp,
-    resendOtp,
-    login,
-    logout,
-    forgotPassword,
-    verifyResetOtp,
-    resetPassword,
-    getMe,
-    updateProfile,
+  signup,
+  verifyOtp,
+  resendOtp,
+  login,
+  logout,
+  forgotPassword,
+  verifyResetOtp,
+  resetPassword,
+  getMe,
+  updateProfile,
 };

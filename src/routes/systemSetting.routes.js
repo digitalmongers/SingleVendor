@@ -8,9 +8,9 @@ import lockRequest from '../middleware/idempotency.middleware.js';
 import rateLimit from 'express-rate-limit';
 
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 20, // Strict limit for system settings
-    message: 'Too many setting update requests'
+  windowMs: 15 * 60 * 1000,
+  max: 20, // Strict limit for system settings
+  message: 'Too many setting update requests'
 });
 
 const router = express.Router();
@@ -21,11 +21,11 @@ router.use(authorizeStaff(SYSTEM_PERMISSIONS.SYSTEM_SETTINGS));
 router.get('/', SystemSettingController.getSettings);
 
 router.patch(
-    '/',
-    limiter,
-    lockRequest(), // Idempotency
-    validate(updateSystemSettingSchema),
-    SystemSettingController.updateSettings
+  '/',
+  limiter,
+  lockRequest(), // Idempotency
+  validate(updateSystemSettingSchema),
+  SystemSettingController.updateSettings
 );
 
 export default router;

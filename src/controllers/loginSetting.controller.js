@@ -6,28 +6,28 @@ import Cache from '../utils/cache.js';
 import AuditLogger from '../utils/audit.js';
 
 class LoginSettingController {
-    getSettings = catchAsync(async (req, res) => {
-        const settings = await LoginSettingService.getSettings();
-        res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, settings));
+  getSettings = catchAsync(async (req, res) => {
+    const settings = await LoginSettingService.getSettings();
+    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, settings));
+  });
+
+  updateSettings = catchAsync(async (req, res) => {
+    const settings = await LoginSettingService.updateSettings(
+      req.body,
+      req.user?._id || req.admin?._id,
+      req.role === 'admin' ? 'Admin' : 'Employee'
+    );
+
+    // Invalidate relevant cache if any
+    await Cache.delByPattern('*login-settings*');
+
+    // Audit Log
+    AuditLogger.log('UPDATE_LOGIN_SETTINGS', 'SYSTEM_CONFIG', {
+      updatedBy: req.user?._id || req.admin?._id,
     });
 
-    updateSettings = catchAsync(async (req, res) => {
-        const settings = await LoginSettingService.updateSettings(
-            req.body,
-            req.user?._id || req.admin?._id,
-            req.role === 'admin' ? 'Admin' : 'Employee'
-        );
-
-        // Invalidate relevant cache if any
-        await Cache.delByPattern('*login-settings*');
-
-        // Audit Log
-        AuditLogger.log('UPDATE_LOGIN_SETTINGS', 'SYSTEM_CONFIG', {
-            updatedBy: req.user?._id || req.admin?._id,
-        });
-
-        res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, settings, 'Login settings updated successfully'));
-    });
+    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, settings, 'Login settings updated successfully'));
+  });
 }
 
 export default new LoginSettingController();

@@ -19,15 +19,15 @@ const securityMiddleware = (app) => {
   app.use(helmet({
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["'self'"],
-        baseUri: ["'self'"],
-        fontSrc: ["'self'", 'https:', 'data:'],
-        frameAncestors: ["'self'"],
-        imgSrc: ["'self'", 'data:', 'https://res.cloudinary.com'],
-        objectSrc: ["'none'"],
-        scriptSrc: ["'self'"],
-        scriptSrcAttr: ["'none'"],
-        styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
+        defaultSrc: ['\'self\''],
+        baseUri: ['\'self\''],
+        fontSrc: ['\'self\'', 'https:', 'data:'],
+        frameAncestors: ['\'self\''],
+        imgSrc: ['\'self\'', 'data:', 'https://res.cloudinary.com'],
+        objectSrc: ['\'none\''],
+        scriptSrc: ['\'self\''],
+        scriptSrcAttr: ['\'none\''],
+        styleSrc: ['\'self\'', 'https:', '\'unsafe-inline\''],
         upgradeInsecureRequests: [],
       },
     },
@@ -69,7 +69,7 @@ const securityMiddleware = (app) => {
         }
 
         // Normalize origin (Remove trailing slashes)
-        const normalizedOrigin = origin.replace(/\/$/, "");
+        const normalizedOrigin = origin.replace(/\/$/, '');
         const isWhitelisted = whitelist.includes(normalizedOrigin) || whitelist.includes(origin);
         const isDevelopment = env.NODE_ENV === 'development';
 

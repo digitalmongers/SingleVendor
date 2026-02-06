@@ -7,131 +7,131 @@ import AuditLogger from '../utils/audit.js';
 import ApiResponse from '../utils/apiResponse.js';
 
 class WishlistController {
-    /**
+  /**
      * GET /api/v1/wishlist - Get customer wishlist
      */
-    async getWishlist(req, res, next) {
-        try {
-            const customerId = req.customer._id;
-            const wishlist = await WishlistService.getWishlist(customerId);
+  async getWishlist(req, res, next) {
+    try {
+      const customerId = req.customer._id;
+      const wishlist = await WishlistService.getWishlist(customerId);
 
-            res.status(HTTP_STATUS.OK).json(new ApiResponse(
-                HTTP_STATUS.OK,
-                wishlist,
-                SUCCESS_MESSAGES.FETCHED
-            ));
-        } catch (error) {
-            next(error);
-        }
+      res.status(HTTP_STATUS.OK).json(new ApiResponse(
+        HTTP_STATUS.OK,
+        wishlist,
+        SUCCESS_MESSAGES.FETCHED
+      ));
+    } catch (error) {
+      next(error);
     }
+  }
 
-    /**
+  /**
      * POST /api/v1/wishlist - Add product to wishlist
      */
-    async addToWishlist(req, res, next) {
-        try {
-            const customerId = req.customer._id;
+  async addToWishlist(req, res, next) {
+    try {
+      const customerId = req.customer._id;
 
-            // Validate request body
-            const validation = addToWishlistSchema.safeParse(req.body);
-            if (!validation.success) {
-                throw new AppError(
-                    validation.error.errors[0].message,
-                    HTTP_STATUS.BAD_REQUEST,
-                    'VALIDATION_ERROR'
-                );
-            }
+      // Validate request body
+      const validation = addToWishlistSchema.safeParse(req.body);
+      if (!validation.success) {
+        throw new AppError(
+          validation.error.errors[0].message,
+          HTTP_STATUS.BAD_REQUEST,
+          'VALIDATION_ERROR'
+        );
+      }
 
-            const { productId } = validation.data;
+      const { productId } = validation.data;
 
-            const wishlist = await WishlistService.addToWishlist(customerId, productId);
+      const wishlist = await WishlistService.addToWishlist(customerId, productId);
 
-            // Audit Log
-            AuditLogger.log('WISHLIST_ADD', 'CUSTOMER', { customerId, productId });
+      // Audit Log
+      AuditLogger.log('WISHLIST_ADD', 'CUSTOMER', { customerId, productId });
 
-            res.status(HTTP_STATUS.OK).json(new ApiResponse(
-                HTTP_STATUS.OK,
-                wishlist,
-                'Product added to wishlist successfully'
-            ));
-        } catch (error) {
-            next(error);
-        }
+      res.status(HTTP_STATUS.OK).json(new ApiResponse(
+        HTTP_STATUS.OK,
+        wishlist,
+        'Product added to wishlist successfully'
+      ));
+    } catch (error) {
+      next(error);
     }
+  }
 
-    /**
+  /**
      * DELETE /api/v1/wishlist/:productId - Remove product from wishlist
      */
-    async removeFromWishlist(req, res, next) {
-        try {
-            const customerId = req.customer._id;
-            const { productId } = req.params;
+  async removeFromWishlist(req, res, next) {
+    try {
+      const customerId = req.customer._id;
+      const { productId } = req.params;
 
-            // Validate productId format
-            if (!/^[0-9a-fA-F]{24}$/.test(productId)) {
-                throw new AppError('Invalid product ID', HTTP_STATUS.BAD_REQUEST);
-            }
+      // Validate productId format
+      if (!/^[0-9a-fA-F]{24}$/.test(productId)) {
+        throw new AppError('Invalid product ID', HTTP_STATUS.BAD_REQUEST);
+      }
 
-            const wishlist = await WishlistService.removeFromWishlist(customerId, productId);
+      const wishlist = await WishlistService.removeFromWishlist(customerId, productId);
 
-            // Audit Log
-            AuditLogger.log('WISHLIST_REMOVE', 'CUSTOMER', { customerId, productId });
+      // Audit Log
+      AuditLogger.log('WISHLIST_REMOVE', 'CUSTOMER', { customerId, productId });
 
-            res.status(HTTP_STATUS.OK).json(new ApiResponse(
-                HTTP_STATUS.OK,
-                wishlist,
-                'Product removed from wishlist successfully'
-            ));
-        } catch (error) {
-            next(error);
-        }
+      res.status(HTTP_STATUS.OK).json(new ApiResponse(
+        HTTP_STATUS.OK,
+        wishlist,
+        'Product removed from wishlist successfully'
+      ));
+    } catch (error) {
+      next(error);
     }
+  }
 
-    /**
+  /**
      * GET /api/v1/wishlist/check/:productId - Check if product is in wishlist
      */
-    async checkProduct(req, res, next) {
-        try {
-            const customerId = req.customer._id;
-            const { productId } = req.params;
+  async checkProduct(req, res, next) {
+    try {
+      const customerId = req.customer._id;
+      const { productId } = req.params;
 
-            // Validate productId format
-            if (!/^[0-9a-fA-F]{24}$/.test(productId)) {
-                throw new AppError('Invalid product ID', HTTP_STATUS.BAD_REQUEST);
-            }
+      // Validate productId format
+      if (!/^[0-9a-fA-F]{24}$/.test(productId)) {
+        throw new AppError('Invalid product ID', HTTP_STATUS.BAD_REQUEST);
+      }
 
-            const result = await WishlistService.isInWishlist(customerId, productId);
+      const result = await WishlistService.isInWishlist(customerId, productId);
 
-            res.status(HTTP_STATUS.OK).json({
-                success: true,
-                data: result
-            });
-        } catch (error) {
-            next(error);
-        }
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        data: result
+      });
+    } catch (error) {
+      next(error);
     }
+  }
 
-    /**
+  /**
      * DELETE /api/v1/wishlist - Clear entire wishlist
      */
-    async clearWishlist(req, res, next) {
-        try {
-            const customerId = req.customer._id;
+  async clearWishlist(req, res, next) {
+    try {
+      const customerId = req.customer._id;
 
-            const wishlist = await WishlistService.clearWishlist(customerId);
+      const wishlist = await WishlistService.clearWishlist(customerId);
 
-            // Audit Log
-            AuditLogger.log('WISHLIST_CLEAR', 'CUSTOMER', { customerId });
+      // Audit Log
+      AuditLogger.log('WISHLIST_CLEAR', 'CUSTOMER', { customerId });
 
-            res.status(HTTP_STATUS.OK).json(new ApiResponse(
-                HTTP_STATUS.OK,
-                wishlist,
-                'Wishlist cleared successfully'
-            ));
-        } catch (error) {
-            next(error);
-        }
+      res.status(HTTP_STATUS.OK).json(new ApiResponse(
+        HTTP_STATUS.OK,
+        wishlist,
+        'Wishlist cleared successfully'
+      ));
+    } catch (error) {
+      next(error);
     }
+  }
 }
 
 export default new WishlistController();

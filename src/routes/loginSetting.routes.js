@@ -9,9 +9,9 @@ import rateLimit from 'express-rate-limit';
 import lockRequest from '../middleware/idempotency.middleware.js';
 
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 50,
-    message: 'Too many requests'
+  windowMs: 15 * 60 * 1000,
+  max: 50,
+  message: 'Too many requests'
 });
 
 const router = express.Router();

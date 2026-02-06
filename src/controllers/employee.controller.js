@@ -10,8 +10,8 @@ import { jsonToCsv } from '../utils/csvGenerator.js';
  * @access  Private (Admin)
  */
 export const registerEmployee = catchAsync(async (req, res) => {
-    const employee = await EmployeeService.registerEmployee(req.body, req.files);
-    res.status(HTTP_STATUS.CREATED).json(new ApiResponse(HTTP_STATUS.CREATED, employee, 'Employee registered successfully'));
+  const employee = await EmployeeService.registerEmployee(req.body, req.files);
+  res.status(HTTP_STATUS.CREATED).json(new ApiResponse(HTTP_STATUS.CREATED, employee, 'Employee registered successfully'));
 });
 
 /**
@@ -20,9 +20,9 @@ export const registerEmployee = catchAsync(async (req, res) => {
  * @access  Public
  */
 export const login = catchAsync(async (req, res) => {
-    const { email, password } = req.body;
-    const result = await EmployeeService.login(email, password);
-    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, result, 'Login successful'));
+  const { email, password } = req.body;
+  const result = await EmployeeService.login(email, password);
+  res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, result, 'Login successful'));
 });
 
 /**
@@ -31,14 +31,14 @@ export const login = catchAsync(async (req, res) => {
  * @access  Private (Admin)
  */
 export const getAllEmployees = catchAsync(async (req, res) => {
-    const { page = 1, limit = 10, search, status, role } = req.query;
-    const query = {};
-    if (search) query.$or = [{ name: new RegExp(search, 'i') }, { email: new RegExp(search, 'i') }];
-    if (status) query.isActive = status === 'active';
-    if (role) query.role = role;
+  const { page = 1, limit = 10, search, status, role } = req.query;
+  const query = {};
+  if (search) query.$or = [{ name: new RegExp(search, 'i') }, { email: new RegExp(search, 'i') }];
+  if (status) query.isActive = status === 'active';
+  if (role) query.role = role;
 
-    const result = await EmployeeService.getAllEmployees(query, Number(page), Number(limit));
-    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, result));
+  const result = await EmployeeService.getAllEmployees(query, Number(page), Number(limit));
+  res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, result));
 });
 
 /**
@@ -47,8 +47,8 @@ export const getAllEmployees = catchAsync(async (req, res) => {
  * @access  Private (Admin)
  */
 export const getStats = catchAsync(async (req, res) => {
-    const stats = await EmployeeService.getEmployeeStats();
-    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, stats));
+  const stats = await EmployeeService.getEmployeeStats();
+  res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, stats));
 });
 
 /**
@@ -57,9 +57,9 @@ export const getStats = catchAsync(async (req, res) => {
  * @access  Private (Admin)
  */
 export const toggleStatus = catchAsync(async (req, res) => {
-    const { isActive } = req.body;
-    const employee = await EmployeeService.updateEmployeeStatus(req.params.id, isActive);
-    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, employee, `Employee ${isActive ? 'unblocked' : 'blocked'} successfully`));
+  const { isActive } = req.body;
+  const employee = await EmployeeService.updateEmployeeStatus(req.params.id, isActive);
+  res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, employee, `Employee ${isActive ? 'unblocked' : 'blocked'} successfully`));
 });
 
 /**
@@ -68,16 +68,16 @@ export const toggleStatus = catchAsync(async (req, res) => {
  * @access  Private (Admin)
  */
 export const exportEmployees = catchAsync(async (req, res) => {
-    const { employees } = await EmployeeService.getAllEmployees({}, 1, 1000);
+  const { employees } = await EmployeeService.getAllEmployees({}, 1, 1000);
 
-    const headers = ['ID', 'Name', 'Email', 'Phone', 'Role', 'Status', 'Last Login'];
-    const fields = ['_id', 'name', 'email', 'phoneNumber', 'role.name', 'isActive', 'lastLogin'];
+  const headers = ['ID', 'Name', 'Email', 'Phone', 'Role', 'Status', 'Last Login'];
+  const fields = ['_id', 'name', 'email', 'phoneNumber', 'role.name', 'isActive', 'lastLogin'];
 
-    const csv = jsonToCsv(employees, headers, fields);
+  const csv = jsonToCsv(employees, headers, fields);
 
-    res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', 'attachment; filename=employees.csv');
-    res.status(200).send(csv);
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', 'attachment; filename=employees.csv');
+  res.status(200).send(csv);
 });
 
 /**
@@ -86,8 +86,8 @@ export const exportEmployees = catchAsync(async (req, res) => {
  * @access  Private (Admin)
  */
 export const deleteEmployee = catchAsync(async (req, res) => {
-    await EmployeeService.deleteEmployee(req.params.id);
-    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, null, 'Employee deleted successfully'));
+  await EmployeeService.deleteEmployee(req.params.id);
+  res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, null, 'Employee deleted successfully'));
 });
 
 /**
@@ -96,17 +96,17 @@ export const deleteEmployee = catchAsync(async (req, res) => {
  * @access  Private (Admin)
  */
 export const updateEmployee = catchAsync(async (req, res) => {
-    const employee = await EmployeeService.updateEmployee(req.params.id, req.body, req.files);
-    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, employee, 'Employee updated successfully'));
+  const employee = await EmployeeService.updateEmployee(req.params.id, req.body, req.files);
+  res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, employee, 'Employee updated successfully'));
 });
 
 export default {
-    registerEmployee,
-    login,
-    getAllEmployees,
-    getStats,
-    toggleStatus,
-    exportEmployees,
-    deleteEmployee,
-    updateEmployee,
+  registerEmployee,
+  login,
+  getAllEmployees,
+  getStats,
+  toggleStatus,
+  exportEmployees,
+  deleteEmployee,
+  updateEmployee,
 };
