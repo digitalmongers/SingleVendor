@@ -9,44 +9,44 @@ import lockRequest from '../middleware/idempotency.middleware.js';
 const router = express.Router();
 
 const dealSchema = z.object({
-    body: z.object({
-        title: z.string().min(1),
-        startDate: z.string().datetime(),
-        endDate: z.string().datetime(),
-        image: z.string().url(),
-        metaTitle: z.string().optional(),
-        metaDescription: z.string().optional(),
-        metaImage: z.string().optional()
-    })
+  body: z.object({
+    title: z.string().min(1),
+    startDate: z.string().datetime(),
+    endDate: z.string().datetime(),
+    image: z.string().url(),
+    metaTitle: z.string().optional(),
+    metaDescription: z.string().optional(),
+    metaImage: z.string().optional()
+  })
 });
 
 const publishSchema = z.object({
-    body: z.object({
-        isPublished: z.boolean()
-    })
+  body: z.object({
+    isPublished: z.boolean()
+  })
 });
 
 const addProductsSchema = z.object({
-    body: z.object({
-        products: z.array(z.object({
-            product: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid Product ID"),
-            discount: z.number().min(0),
-            discountType: z.enum(['flat', 'percent'])
-        })).min(1)
-    })
+  body: z.object({
+    products: z.array(z.object({
+      product: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid Product ID'),
+      discount: z.number().min(0),
+      discountType: z.enum(['flat', 'percent'])
+    })).min(1)
+  })
 });
 
 // Admin/Staff Protection
 router.use(authorizeStaff(SYSTEM_PERMISSIONS.OFFERS_AND_DEALS));
 
 router.route('/')
-    .get(AdminFlashDealController.getDeals)
-    .post(lockRequest(), validate(dealSchema), AdminFlashDealController.createDeal);
+  .get(AdminFlashDealController.getDeals)
+  .post(lockRequest(), validate(dealSchema), AdminFlashDealController.createDeal);
 
 router.route('/:id')
-    .get(AdminFlashDealController.getDeal)
-    .patch(lockRequest(), validate(dealSchema.partial()), AdminFlashDealController.updateDeal)
-    .delete(lockRequest(), AdminFlashDealController.deleteDeal);
+  .get(AdminFlashDealController.getDeal)
+  .patch(lockRequest(), validate(dealSchema.partial()), AdminFlashDealController.updateDeal)
+  .delete(lockRequest(), AdminFlashDealController.deleteDeal);
 
 router.patch('/:id/publish', lockRequest(), validate(publishSchema), AdminFlashDealController.togglePublish);
 

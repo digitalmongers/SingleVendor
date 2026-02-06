@@ -16,10 +16,10 @@ router.get('/', cacheMiddleware(3600), PaymentSettingController.getSettings);
  * ADMIN ROUTES
  */
 router.patch(
-    '/',
-    authorizeStaff(SYSTEM_PERMISSIONS.SYSTEM_SETTINGS),
-    lockRequest(),
-    PaymentSettingController.updateSettings
+  '/',
+  authorizeStaff(SYSTEM_PERMISSIONS.SYSTEM_SETTINGS),
+  lockRequest(),
+  PaymentSettingController.updateSettings
 );
 
 export default router;

@@ -1,70 +1,70 @@
 import mongoose from 'mongoose';
 
 const couponSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    code: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        uppercase: true,
-        index: true
-    },
-    type: {
-        type: String,
-        enum: ['discount_on_purchase', 'free_delivery', 'first_order'],
-        required: true
-    },
-    discountType: {
-        type: String,
-        enum: ['amount', 'percent'],
-        default: 'amount',
-        required: function () { return this.type !== 'free_delivery'; }
-    },
-    discountAmount: {
-        type: Number,
-        default: 0,
-        min: 0
-    },
-    minPurchase: {
-        type: Number,
-        default: 0,
-        min: 0
-    },
-    limitForSameUser: {
-        type: Number,
-        default: 1,
-        min: 1
-    },
-    startDate: {
-        type: Date,
-        required: true
-    },
-    expireDate: {
-        type: Date,
-        required: true
-    },
-    isActive: {
-        type: Boolean,
-        default: true,
-        index: true
-    },
-    customerScope: {
-        type: String,
-        enum: ['all'],
-        default: 'all'
-    },
-    totalUsed: {
-        type: Number,
-        default: 0
-    }
+  title: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  code: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    uppercase: true,
+    index: true
+  },
+  type: {
+    type: String,
+    enum: ['discount_on_purchase', 'free_delivery', 'first_order'],
+    required: true
+  },
+  discountType: {
+    type: String,
+    enum: ['amount', 'percent'],
+    default: 'amount',
+    required: function () { return this.type !== 'free_delivery'; }
+  },
+  discountAmount: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  minPurchase: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  limitForSameUser: {
+    type: Number,
+    default: 1,
+    min: 1
+  },
+  startDate: {
+    type: Date,
+    required: true
+  },
+  expireDate: {
+    type: Date,
+    required: true
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+    index: true
+  },
+  customerScope: {
+    type: String,
+    enum: ['all'],
+    default: 'all'
+  },
+  totalUsed: {
+    type: Number,
+    default: 0
+  }
 }, {
-    timestamps: true,
-    versionKey: false
+  timestamps: true,
+  versionKey: false
 });
 
 // Compound index for quick validation lookups during checkout

@@ -48,18 +48,18 @@ class NewsletterRepository {
     // 3. Sorting
     let sort = { createdAt: -1 }; // Default: Newest First
     switch (sortBy) {
-      case 'oldestFirst':
-        sort = { createdAt: 1 };
-        break;
-      case 'emailAZ':
-        sort = { email: 1 };
-        break;
-      case 'emailZA':
-        sort = { email: -1 };
-        break;
-      case 'newestFirst':
-      default:
-        sort = { createdAt: -1 };
+    case 'oldestFirst':
+      sort = { createdAt: 1 };
+      break;
+    case 'emailAZ':
+      sort = { email: 1 };
+      break;
+    case 'emailZA':
+      sort = { email: -1 };
+      break;
+    case 'newestFirst':
+    default:
+      sort = { createdAt: -1 };
     }
 
     const subscribers = await Newsletter.find(query)

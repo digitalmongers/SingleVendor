@@ -16,17 +16,17 @@ class AuditLogger {
 
     // Call appropriate Logger method based on level
     switch (level) {
-      case 'error':
-        Logger.error(`AUDIT: ${action}`, auditData);
-        break;
-      case 'warn':
-        Logger.warn(`AUDIT: ${action}`, auditData);
-        break;
-      case 'debug':
-        Logger.debug(`AUDIT: ${action}`, auditData);
-        break;
-      default:
-        Logger.info(`AUDIT: ${action}`, auditData);
+    case 'error':
+      Logger.error(`AUDIT: ${action}`, auditData);
+      break;
+    case 'warn':
+      Logger.warn(`AUDIT: ${action}`, auditData);
+      break;
+    case 'debug':
+      Logger.debug(`AUDIT: ${action}`, auditData);
+      break;
+    default:
+      Logger.info(`AUDIT: ${action}`, auditData);
     }
   }
 

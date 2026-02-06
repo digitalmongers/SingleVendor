@@ -20,10 +20,10 @@ router.use(authorizeStaff(SYSTEM_PERMISSIONS.USER_MANAGEMENT));
  * @access  Private (Admin)
  */
 router.get(
-    '/',
-    validate(CustomerValidation.adminGetCustomers),
-    cacheMiddleware(300), // 5 min cache for admin list
-    AdminCustomerController.getAllCustomers
+  '/',
+  validate(CustomerValidation.adminGetCustomers),
+  cacheMiddleware(300), // 5 min cache for admin list
+  AdminCustomerController.getAllCustomers
 );
 
 /**
@@ -32,8 +32,8 @@ router.get(
  * @access  Private (Admin)
  */
 router.get(
-    '/export',
-    AdminCustomerController.exportCustomers
+  '/export',
+  AdminCustomerController.exportCustomers
 );
 
 /**
@@ -42,8 +42,8 @@ router.get(
  * @access  Private (Admin)
  */
 router.get(
-    '/:id',
-    AdminCustomerController.getCustomerById
+  '/:id',
+  AdminCustomerController.getCustomerById
 );
 
 /**
@@ -52,10 +52,10 @@ router.get(
  * @access  Private (Admin)
  */
 router.patch(
-    '/:id/status',
-    lockRequest(5),
-    validate(CustomerValidation.adminUpdateStatus),
-    AdminCustomerController.updateCustomerStatus
+  '/:id/status',
+  lockRequest(5),
+  validate(CustomerValidation.adminUpdateStatus),
+  AdminCustomerController.updateCustomerStatus
 );
 
 export default router;

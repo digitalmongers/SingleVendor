@@ -169,12 +169,12 @@ class BlogService {
 
     // Merge SEO data if provided
     if (updateData.metaTitle || updateData.metaDescription) {
-       updateData.seo = {
-         ...blog.seo,
-         ...updateData.seo,
-         metaTitle: updateData.metaTitle || blog.seo?.metaTitle,
-         metaDescription: updateData.metaDescription || blog.seo?.metaDescription,
-       };
+      updateData.seo = {
+        ...blog.seo,
+        ...updateData.seo,
+        metaTitle: updateData.metaTitle || blog.seo?.metaTitle,
+        metaDescription: updateData.metaDescription || blog.seo?.metaDescription,
+      };
     }
 
     const updated = await BlogRepository.updateById(id, updateData);

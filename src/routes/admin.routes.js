@@ -33,8 +33,8 @@ const updatePasswordSchema = z.object({
     newPassword: z.string().min(8, 'New password must be at least 8 characters'),
     confirmPassword: z.string().min(1, 'Confirmation is required'),
   }).refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
+    message: 'Passwords don\'t match',
+    path: ['confirmPassword'],
   }),
 });
 
@@ -58,8 +58,8 @@ const resetPasswordSchema = z.object({
     newPassword: z.string().min(8, 'New password must be at least 8 characters'),
     confirmPassword: z.string().min(1, 'Confirmation is required'),
   }).refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
+    message: 'Passwords don\'t match',
+    path: ['confirmPassword'],
   }),
 });
 

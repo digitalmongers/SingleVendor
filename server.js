@@ -7,7 +7,7 @@ import responseTime from 'response-time';
 import env from './src/config/env.js';
 
 // 2. Monitoring (Sentry must be first)
-import Sentry, { setupExpressErrorHandler } from "./instrument.js";
+import Sentry, { setupExpressErrorHandler } from './instrument.js';
 
 // Configs
 import connectDB from './src/config/db.js';
@@ -36,30 +36,38 @@ console.log('Connected to database.');
 
 // Connect to Redis (Enterprise: verify connectivity on startup)
 try {
-  await redisClient.connect();
+  if (process.env.NODE_ENV !== 'test') {
+    await redisClient.connect();
+  } else {
+    Logger.info('Test environment detected, skipping real Redis connection');
+  }
 } catch (err) {
   Logger.error('Redis connection failed on startup', { error: err.message });
   // We don't exit(1) here if Redis is optional, but for enterprise we usually want it.
 }
-``
-// Bootstrap Admin & Templates
-await AdminService.bootstrapAdmin();
-const CustomerEmailTemplateService = (await import('./src/services/customerEmailTemplate.service.js')).default;
-const PaymentGatewayService = (await import('./src/services/paymentGateway.service.js')).default;
-await CustomerEmailTemplateService.bootstrapTemplates();
-await PaymentGatewayService.bootstrapGateways();
 
-// System Mode Validation on Startup
-try {
-  const isLive = await systemConfig.isLiveMode();
-  if (isLive && env.NODE_ENV !== 'production') {
-    Logger.error(`
-      CRITICAL: System is set to LIVE MODE but running in ${env.NODE_ENV.toUpperCase()} environment.
-      All API requests will be blocked by security middleware until this is resolved.
-    `);
+// Bootstrap Admin & Templates (Skip in test mode for faster/isolated testing)
+if (process.env.NODE_ENV !== 'test') {
+  await AdminService.bootstrapAdmin();
+  const CustomerEmailTemplateService = (await import('./src/services/customerEmailTemplate.service.js')).default;
+  const PaymentGatewayService = (await import('./src/services/paymentGateway.service.js')).default;
+  await CustomerEmailTemplateService.bootstrapTemplates();
+  await PaymentGatewayService.bootstrapGateways();
+
+  // System Mode Validation on Startup
+  try {
+    const isLive = await systemConfig.isLiveMode();
+    if (isLive && env.NODE_ENV !== 'production') {
+      Logger.error(`
+        CRITICAL: System is set to LIVE MODE but running in ${env.NODE_ENV.toUpperCase()} environment.
+        All API requests will be blocked by security middleware until this is resolved.
+      `);
+    }
+  } catch (err) {
+    Logger.error('Failed to validate system mode on startup', { error: err.message });
   }
-} catch (err) {
-  Logger.error('Failed to validate system mode on startup', { error: err.message });
+} else {
+  Logger.info('Test environment detected, skipping service bootstrapping');
 }
 
 const app = express();
@@ -121,9 +129,12 @@ app.use(errorHandler);
 
 const PORT = env.PORT || 5000;
 
-const server = app.listen(PORT, () => {
-  Logger.info(`🚀 Server running in ${env.NODE_ENV} mode on port ${PORT}`);
-});
+let server;
+if (process.env.NODE_ENV !== 'test') {
+  server = app.listen(PORT, () => {
+    Logger.info(`🚀 Server running in ${env.NODE_ENV} mode on port ${PORT}`);
+  });
+}
 
 /**
  * GRACEFUL SHUTDOWN
@@ -165,3 +176,5 @@ process.on('uncaughtException', (err) => {
   Logger.error(`Uncaught Exception: ${err.message}`, { stack: err.stack });
   process.exit(1);
 });
+
+export default app;

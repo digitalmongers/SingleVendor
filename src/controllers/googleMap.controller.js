@@ -6,33 +6,33 @@ import Cache from '../utils/cache.js';
 import AuditLogger from '../utils/audit.js';
 
 class GoogleMapController {
-    getSettings = catchAsync(async (req, res) => {
-        const settings = await GoogleMapService.getSettings();
-        res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, settings));
+  getSettings = catchAsync(async (req, res) => {
+    const settings = await GoogleMapService.getSettings();
+    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, settings));
+  });
+
+  getPublicSettings = catchAsync(async (req, res) => {
+    const settings = await GoogleMapService.getPublicSettings();
+    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, settings));
+  });
+
+  updateSettings = catchAsync(async (req, res) => {
+    const settings = await GoogleMapService.updateSettings(
+      req.body,
+      req.user?._id || req.admin?._id,
+      req.role === 'admin' ? 'Admin' : 'Employee'
+    );
+
+    // Invalidate Cache
+    await Cache.delByPattern('*google-map-apis*');
+
+    // Audit Log
+    AuditLogger.log('UPDATE_GOOGLE_MAP_SETTINGS', 'THIRD_PARTY_CONFIG', {
+      updatedBy: req.user?._id || req.admin?._id,
     });
 
-    getPublicSettings = catchAsync(async (req, res) => {
-        const settings = await GoogleMapService.getPublicSettings();
-        res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, settings));
-    });
-
-    updateSettings = catchAsync(async (req, res) => {
-        const settings = await GoogleMapService.updateSettings(
-            req.body,
-            req.user?._id || req.admin?._id,
-            req.role === 'admin' ? 'Admin' : 'Employee'
-        );
-
-        // Invalidate Cache
-        await Cache.delByPattern('*google-map-apis*');
-
-        // Audit Log
-        AuditLogger.log('UPDATE_GOOGLE_MAP_SETTINGS', 'THIRD_PARTY_CONFIG', {
-            updatedBy: req.user?._id || req.admin?._id,
-        });
-
-        res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, settings, 'Map settings updated successfully'));
-    });
+    res.status(HTTP_STATUS.OK).json(new ApiResponse(HTTP_STATUS.OK, settings, 'Map settings updated successfully'));
+  });
 }
 
 export default new GoogleMapController();
